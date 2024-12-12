@@ -1,59 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import Question from './Question'
+import Question from './Question';
+import '../stylesheets/Game.css'
 
 function Game() {
-    
-    const [qs, setQs] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { numQuestions, category, difficulty } = location.state || {}; // Retrieve state passed from Welcome.jsx
 
-    async function getQuestions() {
-        try {
-            const response = await fetch(
-                `https://opentdb.com/api.php?amount=${numQuestions}&category=${category}&difficulty=${difficulty}&type=multiple`
-            );
-            const questions = await response.json();
-
-            // Map fetched questions to Question components
-            const questionEls = questions.results.map((q, index) => (
-                <Question
-                    key={index} // Use index if no unique identifier is available
-                    question={q.question}
-                    correctAns={q.correct_answer}
-                    incorrectAns={q.incorrect_answers}
-                />
-            ));
-
-            setQs(questionEls); // Update state with the rendered Question components
-        } 
-        catch (error) {
-            console.error("Error fetching questions:", error);
-        }
-    }
+    // Load questions from localStorage
+    const [questions, setQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [score, setScore] = useState(0);
+    const [feedback, setFeedback] = useState("");
 
     useEffect(() => {
-        getQuestions();
-        console.log("on mount:", qs);
-    }, [])
+        const storedQuestions = JSON.parse(localStorage.getItem("gameQuestions")) || [];
+        setQuestions(storedQuestions);
+    }, []);
 
-    // The useLocation hook provides access to the current route’s state, which contains the values passed from Welcome.jsx
-    const location = useLocation();
+    const handleAnswer = (isCorrect) => {
+        if (isCorrect) {
+            setScore((prev) => prev + 1);
+            setFeedback("Correct! 🎉");
+        } else {
+            setFeedback("Wrong! ❌");
+        }
 
-    // Access the state passed from the Welcome component
-    // location.state || {} ensures that if state is undefined (e.g., if someone directly navigates to /game), the Game component doesn’t crash
-    const { numQuestions, category, difficulty } = location.state || {};
+        // Wait for a brief moment before moving to the next question
+        setTimeout(() => {
+            setFeedback("");
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex((prev) => prev + 1);
+            } else {
+                alert(`Game Over! Your score: ${score + (isCorrect ? 1 : 0)} / ${questions.length}`);
+                navigate('/');
+                // navigate('/gameover', {
+                //     state: {
+                //         score,
+                //         numQuestions
+                //     },
+                // });
+            }
+        }, 1000);
+    };
 
     return (
         <>
-            <div>
-                <h3>Game Parameters</h3>
-                <p>Number of Questions: {numQuestions}</p>
-                <p>Category: {category}</p>
-                <p>Difficulty: {difficulty}</p>
-                {/* Add your game logic here */}
+            <div className='title-ctnr'>
+                <h2>Trivia Game</h2>
+
+                <div>
+                    <p>{difficulty}</p>
+                    <p>{currentQuestionIndex + 1} / {numQuestions}</p>
+                    {/* <p>Category: {category}</p> */}
+                </div>
             </div>
 
-            {qs}
+            {questions.length > 0 ? (
+                <>
+                    <Question
+                        question={questions[currentQuestionIndex].question}
+                        correctAns={questions[currentQuestionIndex].correctAns}
+                        incorrectAns={questions[currentQuestionIndex].incorrectAns}
+                        handleAnswer={handleAnswer}
+                    />
+                    {feedback && <p className="feedback">{feedback}</p>}
+                    <p>Score: {score}</p>
+                </>
+                    
+
+            ) : (
+                <p>Loading questions...</p>
+            )}
         </>
     );
 }

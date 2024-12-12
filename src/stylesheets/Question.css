@@ -1,0 +1,43 @@
+.question-ctnr {
+    display: flex;
+    flex-direction: column;
+    background: var(--container);
+    max-width: 20rem;
+    min-width: 20rem;
+    padding: 1rem 2rem;
+    border-radius: .5rem;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.selection-ctnr{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+
+    button {
+        width: 100%;
+        background: var(--btn-color);
+        color: var(--text-primary);
+        border: none;
+        border: 2px solid var(--btn-color);
+        border-radius: .5rem;
+        padding: 1rem;
+        width: 100%;
+        cursor: pointer;
+    }
+    /* button:hover {
+        background: #52b2bf;
+    } */
+}
+
+
+/* Button answers */
+.answer-button { transition: all 0.3s ease; }
+
+.answer-button.correct { border: 2px solid green; }
+
+.answer-button.incorrect { border: 2px solid red; }
+
+.answer-button:disabled { cursor: not-allowed; }

@@ -1,0 +1,50 @@
+h1 {
+    margin-bottom: 2rem;
+}
+
+.form-ctnr {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    background: var(--container);
+    max-width: fit-content;
+    padding: 1rem 2rem;
+    border-radius: .5rem;
+    gap: 1.5rem;
+
+    input, select {
+        background: #000;
+        color: var(--text-primary);
+        border: 1px solid grey;
+        border-radius: .25rem;
+        padding: .5rem;
+        width: 20rem;
+    }
+
+    button {
+        background: green;
+        color: white;
+        border: none;
+        border-radius: .5rem;
+        padding: .5rem 1rem;
+        margin: 1rem 0;
+        width: 100%;
+        cursor: pointer;
+    }
+}
+
+.label-input {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+    gap: .5rem;
+
+    p { opacity: .5; }
+}
