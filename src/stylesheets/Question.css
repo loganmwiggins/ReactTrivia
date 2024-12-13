@@ -27,9 +27,9 @@
         width: 100%;
         cursor: pointer;
     }
-    /* button:hover {
-        background: #52b2bf;
-    } */
+    button:hover {
+        background: #2a3234;
+    }
 }
 
 
